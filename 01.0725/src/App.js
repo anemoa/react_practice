@@ -1,5 +1,6 @@
 import logo from './logo.svg';
 import './App.css';
+import {useState} from 'react';
 
 function Header(props){
   console.log('props', props.title);
@@ -30,7 +31,7 @@ function Nav(props){
     lis.push(<li key={t.id}>
       <a id={t.id} href={'/read/' + t.id} onClick = {event => {
         event.preventDefault();
-        props.onChangeMode2(event.target.id);
+        props.onChangeMode2(Number(event.target.id));
       }}>{t.title}</a>
       </li>);
   }
@@ -58,21 +59,39 @@ function Article(props){
 }
 
 function App() {
+  const [mode, setMode] = useState('WELCOME');
+  const [id, setId] = useState(null);
   const topics = [
     {id: 1, title: 'html', body: 'html is...'},
     {id: 2, title: 'css', body: 'css is...'},
     {id: 3, title: 'js', body: 'js is...'},
   ];
 
+  let content = null;
+  if(mode === 'WELCOME'){
+    content = <Article title = "Welcome" body = "Hello, Web???"></Article>
+  } else if(mode === 'READ'){
+    let title, body = null;
+    for(let i = 0; i < topics.length; i++){
+      console.log(topics[i].id, id);
+      if(topics[i].id === id){
+        title = topics[i].title;
+        body = topics[i].body;
+      }
+    }
+    content = <Article title = {title} body = {body}></Article>
+  }
+
   return (
     <div>
       <Header title="WEB" onChangeMode = {() => {
-        alert('Header!!!');
+        setMode('WELCOME');
       }}></Header>
-      <Nav topics={topics} onChangeMode2 = {(id) => {
-        alert(id);
+      <Nav topics={topics} onChangeMode2 = {(_id) => {
+        setMode('READ');
+        setId(_id);
       }}></Nav>
-      <Article title="Welcom" body="Hello, Web"></Article>
+      {content}
 
     </div>
   );
