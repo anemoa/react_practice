@@ -1,24 +1,29 @@
 import logo from './logo.svg';
 import './App.css';
-import {useState} from 'react';
+import { useState } from 'react';
 
-function Header(props){
+function Header(props) {
   console.log('props', props.title);
   return (
     <div>
       <header>
         <h1>
-          <a href="/" onClick = {(event) => {
-            event.preventDefault();
-            props.onChangeMode();
-          }}>{props.title}</a>
+          <a
+            href='/'
+            onClick={(event) => {
+              event.preventDefault();
+              props.onChangeMode();
+            }}
+          >
+            {props.title}
+          </a>
         </h1>
       </header>
     </div>
   );
 }
 
-function Nav(props){
+function Nav(props) {
   // const lis = [
   //   <li><a href="/read/1">html2</a></li>,
   //   <li><a href="/read/2">css2</a></li>,
@@ -26,29 +31,35 @@ function Nav(props){
   // ];
 
   const lis = [];
-  for(let i = 0; i < props.topics.length; i++){
+  for (let i = 0; i < props.topics.length; i++) {
     let t = props.topics[i];
-    lis.push(<li key={t.id}>
-      <a id={t.id} href={'/read/' + t.id} onClick = {event => {
-        event.preventDefault();
-        props.onChangeMode2(Number(event.target.id));
-      }}>{t.title}</a>
-      </li>);
+    lis.push(
+      <li key={t.id}>
+        <a
+          id={t.id}
+          href={'/read/' + t.id}
+          onClick={(event) => {
+            event.preventDefault();
+            props.onChangeMode2(Number(event.target.id));
+          }}
+        >
+          {t.title}
+        </a>
+      </li>
+    );
   }
 
-  return(
+  return (
     <div>
       <nav>
-        <ol>
-          {lis}
-        </ol>
+        <ol>{lis}</ol>
       </nav>
     </div>
   );
 }
 
-function Article(props){
-  return(
+function Article(props) {
+  return (
     <div>
       <article>
         <h2>{props.title}</h2>
@@ -58,41 +69,92 @@ function Article(props){
   );
 }
 
+function Create(props) {
+  return (
+    <article>
+      <h2>Create</h2>
+      <form onSubmit={event => {
+        event.preventDefault();
+        const title = event.target.title.value;
+        const body = event.target.body.value;
+        props.onCreate(title, body);
+      }}>
+        <p>
+          <input type='text' name='title' placeholder='title' />
+        </p>
+        <p>
+          <textarea name='body' placeholder='body'></textarea>
+        </p>
+        <p>
+          <input type="submit" value="Create" />
+        </p>
+      </form>
+    </article>
+  );
+}
+
 function App() {
-  const [mode, setMode] = useState('WELCOME');
+  const [mode, setMode] = useState('CREATE');
   const [id, setId] = useState(null);
-  const topics = [
-    {id: 1, title: 'html', body: 'html is...'},
-    {id: 2, title: 'css', body: 'css is...'},
-    {id: 3, title: 'js', body: 'js is...'},
-  ];
+  const [nextId, setNextId] = useState(4);
+  const [topics, setTopics] = useState([
+    { id: 1, title: 'html', body: 'html is...' },
+    { id: 2, title: 'css', body: 'css is...' },
+    { id: 3, title: 'js', body: 'js is...' },
+  ]);
 
   let content = null;
-  if(mode === 'WELCOME'){
-    content = <Article title = "Welcome" body = "Hello, Web???"></Article>
-  } else if(mode === 'READ'){
-    let title, body = null;
-    for(let i = 0; i < topics.length; i++){
+  if (mode === 'WELCOME') {
+    content = <Article title='Welcome' body='Hello, Web???'></Article>;
+  } else if (mode === 'READ') {
+    let title,
+      body = null;
+    for (let i = 0; i < topics.length; i++) {
       console.log(topics[i].id, id);
-      if(topics[i].id === id){
+      if (topics[i].id === id) {
         title = topics[i].title;
         body = topics[i].body;
       }
     }
-    content = <Article title = {title} body = {body}></Article>
+    content = <Article title={title} body={body}></Article>;
+  } else if (mode === 'CREATE') {
+    content = <Create onCreate={(_title, _body) => {
+      const newTopic = {id: nextId, title: _title, body: _body};
+      const newTopics = [...topics]
+      newTopics.push(newTopic);
+      setTopics(newTopics);
+      setMode('READ');
+      setId(nextId);
+      setNextId(nextId + 1);
+    }}></Create>;
   }
 
   return (
     <div>
-      <Header title="WEB" onChangeMode = {() => {
-        setMode('WELCOME');
-      }}></Header>
-      <Nav topics={topics} onChangeMode2 = {(_id) => {
-        setMode('READ');
-        setId(_id);
-      }}></Nav>
+      <Header
+        title='WEB'
+        onChangeMode={() => {
+          setMode('WELCOME');
+        }}
+      ></Header>
+      <Nav
+        topics={topics}
+        onChangeMode2={(_id) => {
+          setMode('READ');
+          setId(_id);
+        }}
+      ></Nav>
       {content}
 
+      <a
+        href='/create'
+        onClick={(event) => {
+          event.preventDefault();
+          setMode('CREATE');
+        }}
+      >
+        CREATE
+      </a>
     </div>
   );
 }
