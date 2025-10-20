@@ -1,4 +1,5 @@
 import './App.css';
+import Greeting from './Greeting';
 
 interface Person{
 	name: string,
@@ -31,6 +32,11 @@ function App() {
 				<h2>person 정보</h2>
 				<p>이름: {person.name}</p>
 				<p>나이: {person.age}살</p>
+			</div>
+
+			<div>
+				<Greeting name='모모모' age={33} />
+				<Greeting name='도도도' age={55} />
 			</div>
         </>
     );
