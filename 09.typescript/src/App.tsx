@@ -1,4 +1,5 @@
 import './App.css';
+import Counter from './Counter';
 import Greeting from './Greeting';
 
 interface Person{
@@ -38,6 +39,8 @@ function App() {
 				<Greeting name='모모모' age={33} />
 				<Greeting name='도도도' age={55} />
 			</div>
+
+			<Counter />
         </>
     );
 }
