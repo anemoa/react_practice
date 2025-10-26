@@ -1,6 +1,7 @@
 import './App.css';
 import Counter from './Counter';
 import Greeting from './Greeting';
+import InputExample from './InputExample';
 
 interface Person{
 	name: string,
@@ -41,6 +42,8 @@ function App() {
 			</div>
 
 			<Counter />
+
+			<InputExample />
         </>
     );
 }
